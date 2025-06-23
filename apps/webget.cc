@@ -9,8 +9,21 @@ using namespace std;
 
 void get_URL( const string& host, const string& path )
 {
-  cerr << "Function called: get_URL(" << host << ", " << path << ")\n";
-  cerr << "Warning: get_URL() has not been implemented yet.\n";
+  Address address { host, "http" };
+  TCPSocket socket;
+  socket.connect( address );
+  socket.write("GET " + path + " HTTP/1.1\r\n");
+  socket.write("HOST: " + host + "\r\n");
+  socket.write("Connection: close\r\n");
+  socket.write("\r\n");
+  // already send to the host. Then we need to read from the socket until EOF and print
+  while ( !socket.eof() ) {
+    std::string buffer;
+    socket.read( buffer );
+    std::cout << buffer;
+  }
+  socket.close();
+
 }
 
 int main( int argc, char* argv[] )
